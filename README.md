@@ -13,14 +13,17 @@ pip install -r requirements.txt
 
 
 
-This tool aims to accomplish the following:
+Planning Notes:
+1. Get current lines from DraftKings with dkstream script
 
-1. Make it easy to download stats from the NBA
+2. Get available parlay props with manual upload from Underdog and Prizepicks, saved as ud.json and pp.json
 
+3. For available lines, calculate the following:
+a. Player performance and variance for the stat, over the season and other periods (10 games, 5 games?)
+b. Opponent stats against, showing how players perform against them. (Note: This needs to adjust for the teams they've played, look for existing stats. This should also adjust for position, find out how that's done.)
+c. Which lines are more favorable (Maybe create a basic equation that factors player stats, opponent stats allowed, and variance of each)
 
-
-2. Analyze the lines available on Underdog and Prizepicks, after manually downloading them to avoid violating the site guidelines.
-3. Compare the individual NBA player props against their past performance.
-4. Provide insights into how players have performed against opponents.
-5. Organize the available player props based on some method that ranks them based on past player performance and their opponents.
-6. Add more functionality that might help to make better decisions.
+4. Question: Which of the following should this do?:
+a. Calculate and Filter only for lines that are available on UD or PP
+b. Calculate for all lines, and sort the most favorable
+c. Both?
