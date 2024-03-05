@@ -10,6 +10,8 @@ import logging
 #Do I want stats to update first, or should I first get the list of players and update only their stats?
 #Not having all player stats would make defensive analysis data incomplete, so it should probably run first.
 
+#Maybe create a separate script, that updates the database with additional analysis, like variance and medians for each prop? (see nbastatsanalysis.py)
+
 # Insert call for nbastatsupdater.py
 #
 #
@@ -45,3 +47,4 @@ all_prop_data['Odds'] = pd.to_numeric(all_prop_data['Odds'], errors='coerce')
 cur_prop_data['Odds'] = pd.to_numeric(cur_prop_data['Odds'], errors='coerce')
 
 props_conn.close()
+
