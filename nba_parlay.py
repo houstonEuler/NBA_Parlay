@@ -48,3 +48,38 @@ cur_prop_data['Odds'] = pd.to_numeric(cur_prop_data['Odds'], errors='coerce')
 
 props_conn.close()
 
+
+
+#For each player and props, it should:
+
+
+
+
+#Retrieve current odds on DK
+
+
+
+
+#Retrieve current odds on UD and PP
+
+
+
+
+#Retrieve average stats for player and prop
+
+
+
+#Retrieve median stats for player and prop
+
+
+
+#Retrieve variance? for player and prop
+
+
+
+
+#Retrieve Opponent Stats and Variance? Can this be from an external source???
+
+
+
+
