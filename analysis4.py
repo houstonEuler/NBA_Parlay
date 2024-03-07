@@ -1,4 +1,4 @@
-#This script takes the data from Draftkings, as well as from Underdog and Prizepicks, finds the props that match, and are lower than -120, and prints them, sorted by the name of the prop.
+#This script takes the data from Draftkings, as well as from Underdog and Prizepicks, finds the props that match, and are lower than -120, and prints them, sorted by the highest odds.
 #This script should be adapted to include nba stats data in the nba_parlay.py file. 
 
 import sqlite3
@@ -23,19 +23,15 @@ df2 = pd.read_sql_query("SELECT * FROM current_data", conn)
 df['Odds'] = pd.to_numeric(df['Odds'], errors='coerce')
 df2['Odds'] = pd.to_numeric(df2['Odds'], errors='coerce')
 
-df = df[["Prop","Event_ID","Player_Name","Outcome","Odds","Line","timestamp"]]
-df2 = df2[["Prop","Event_ID","Player_Name","Outcome","Odds","Line"]]
-
 df['Player_Name'] = df['Player_Name'].str.strip()
 df2['Player_Name'] = df2['Player_Name'].str.strip()
-
 
 conn.close()
 
 df3 = []
 
 df = df.sort_values(by=["Prop","Player_Name","Odds","timestamp"])
-df2 = df2.sort_values(by=["Prop","Odds","Player_Name"])
+df2 = df2.sort_values(by=["Odds","Prop","Player_Name"])
 
 df3 = df[["Event_ID","Prop","Player_Name","Outcome","Odds","Line"]]
 
@@ -60,6 +56,7 @@ pp_df = pd.DataFrame(pp_data)
 name_mapping = {
                 'Cameron Johnson' : 'Cam Johnson',
                 'Cameron Thomas' : 'Cam Thomas',
+                'Nicolas Claxton' : 'Nic Claxton'
 }
 
 
@@ -83,7 +80,7 @@ df6['Row_Num'] = range(1, len(df6) + 1)
 for index, row in df2.iterrows():
     #Check if either UD or PP columns are not empty
     if (row['UD'] or row['PP']) and row['Odds'] < -120:
-        # Find matching lines in df5
+    # Find matching lines in df5
         event_id = row['Event_ID']
         player_name = row['Player_Name']
         prop = row['Prop']
@@ -137,7 +134,6 @@ def res(row_number):
     else:
         print("Invalid row number.")
         return None
-
 
 print(df2)
 print(df4)

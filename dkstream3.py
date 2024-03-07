@@ -1,3 +1,7 @@
+#This script queries the DraftKings API for current betting odds every 5 minutes, and stores it in a database. It updates one table "current_data", with the the most recent props.
+#It stores historical props in the propositions_data table.
+#It's useful, because apps like Sleeper, which are only on mobile, will mirror DraftKings odds, and list props that are not available on Underdog or Prizepicks.
+
 # Import necessary packages
 import requests
 import pandas as pd
