@@ -6,7 +6,57 @@ import pandas as pd
 import numpy as np
 
 #Analyze player performance for each prop
+def get_over_performance_for_player(player_id, prop, line):
+    # Connect to the database
+    conn = sqlite3.connect('nba_stats.db')
+    cursor = conn.cursor()
+    
+    # Query to get the values of the specified column for the given player_id
+    query = f"SELECT {prop} FROM player_game_logs WHERE player_id = ? AND {prop} > ?"
+    cursor.execute(query, (player_id, line))
 
+    # Fetch all the values of the specified column that are over the line
+    over_values = [row[0] for row in cursor.fetchall()]
+
+    # Close the database connection
+    conn.close()
+    
+    return over_values
+
+def get_under_performance_for_player(player_id, prop, line):
+    # Connect to the database
+    conn = sqlite3.connect('nba_stats.db')
+    cursor = conn.cursor()
+    
+    # Query to get the values of the specified column for the given player_id
+    query = f"SELECT {prop} FROM player_game_logs WHERE player_id = ? AND {prop} < ?"
+    cursor.execute(query, (player_id, line))
+
+    # Fetch all the values of the specified column that are over the line
+    under_values = [row[0] for row in cursor.fetchall()]
+
+    # Close the database connection
+    conn.close()
+    
+    return under_values
+
+def get_equal_performance_for_player(player_id, prop, line):
+    # Connect to the database
+    conn = sqlite3.connect('nba_stats.db')
+    cursor = conn.cursor()
+    
+    # Query to get the values of the specified column for the given player_id
+    query = f"SELECT {prop} FROM player_game_logs WHERE player_id = ? AND {prop} = ?"
+    cursor.execute(query, (player_id, line))
+
+    # Fetch all the values of the specified column that are over the line
+    equal_values = [row[0] for row in cursor.fetchall()]
+
+    # Close the database connection
+    conn.close()
+    
+    return equal_values
+    
 
 #Mean and Variance
 def get_mean_variance_for_player(player_id, prop):
@@ -59,6 +109,7 @@ def get_median_variance_for_player(player_id, prop):
 
 
 #Analyze opponent performance for each prop
+
 
 #(Do you need player position and starting status?  Is this available from nba_stats?)
 
