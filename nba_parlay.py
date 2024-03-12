@@ -5,6 +5,7 @@ from pp2 import fetch_pp_data
 import nbaapi
 import time
 import logging
+import nbastatsanalysis
 
 
 #Do I want stats to update first, or should I first get the list of players and update only their stats?
@@ -20,11 +21,11 @@ import logging
 
 #Create connections to databases combodata.db has currently and former props/lines/odds from the DraftKings API, and nba_stats has NBA player stats from the nba_stats API (stored through nbaapi.py)
 props_conn = sqlite3.connect('combodata.db')
-stats_conn = sqlite3.connect('nba_stats.db')
+
 
 #Create cursors for databases
 props_cursor = props_conn.cursor()
-stats_cursor = stats_conn.cursor()
+
 
 #Use ud.py and pp.py to grab the manually-stored data from their websites
 #Underdog Data: https://api.underdogfantasy.com/beta/v5/over_under_lines
@@ -65,11 +66,16 @@ props_conn.close()
 
 
 
+#Retrieve over/under/equal stats for player and prop
+over_performance = nbastatsanalysis.get_over_performance_for_player()
+under_performance = nbastatsanalysis.get_under_performance_for_player()
+equal_performance = nbastatsanalysis.get_equal_performance_for_player()
+
 #Retrieve average stats for player and prop
-
-
+mean_performance = nbastatsanalysis.get_mean_variance_for_player()
 
 #Retrieve median stats for player and prop
+median_performance = nbastatsanalysis.get_median_variance_for_player()
 
 
 
@@ -79,7 +85,7 @@ props_conn.close()
 
 
 #Retrieve Opponent Stats and Variance? Can this be from an external source???
-
+opp_performance = nbastatsanalysis.analyze_player_performance_by_matchup()
 
 
 
