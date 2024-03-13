@@ -41,15 +41,132 @@ pd.set_option('display.width', 1000)
 
 #Reads tables from the props database
 all_prop_data = pd.read_sql_query("SELECT * FROM propositions_data", props_conn)
-cur_prop_data = pd.read_sql_query("SELECT * FROM current_data", props_conn)
+curr_prop_data = pd.read_sql_query("SELECT * FROM current_data", props_conn)
 
 #Converts the Odds column to a numeric value for analysis
 all_prop_data['Odds'] = pd.to_numeric(all_prop_data['Odds'], errors='coerce')
-cur_prop_data['Odds'] = pd.to_numeric(cur_prop_data['Odds'], errors='coerce')
+curr_prop_data['Odds'] = pd.to_numeric(curr_prop_data['Odds'], errors='coerce')
 
+#Convert database tables "propositions_data" and "current_data" to pandas dataframes
+df = all_prop_data[["Prop","Event_ID","Player_Name","Outcome","Odds","Line","timestamp"]]
+df2 = curr_prop_data[["Prop","Event_ID","Player_Name","Outcome","Odds","Line"]]
+
+#close database connection
 props_conn.close()
 
+#strips any extra spaces from player names
+df['Player_Name'] = df['Player_Name'].str.strip()
+df2['Player_Name'] = df2['Player_Name'].str.strip()
 
+#creates a new dataframe
+df3 = []
+
+#sorts dataframes
+df = df.sort_values(by=["Prop","Player_Name","Odds","timestamp"])
+df2 = df2.sort_values(by=["Prop","Odds","Player_Name"])
+
+#Creates new dataframe, might be unnecessary
+df3 = df[["Event_ID","Prop","Player_Name","Outcome","Odds","Line"]]
+
+#creates another dataframe that removes any duplicates, then sorts that dataframe
+df4 = df3.drop_duplicates()
+df4 = df4.sort_values(by=["Prop","Player_Name","Line"])
+
+#Creates another dataframe (This is getting really excessive) 
+df5 = df3[["Event_ID","Player_Name","Prop","Line"]]
+df5 = df5.drop_duplicates()
+
+#Adds new columns to dataframe 2 for Underdog and Prizepicks lines
+df2['UD'] = ''
+df2['PP'] = ''
+
+#Creates dataframes for those lines from the uploaded data
+ud_df = pd.DataFrame(ud_data)
+pp_df = pd.DataFrame(pp_data)
+
+#Fixes some names that are different between the dataframes. Might need to add more as they're discovered.
+name_mapping = {
+                'Cameron Johnson' : 'Cam Johnson',
+                'Cameron Thomas' : 'Cam Thomas',
+}
+
+#Checks if the current prop database matches the player and prop from underdog and prizepicks. If it's not blank, it adds the line to the df2 dataframe for the respective site.
+for index, row in df2.iterrows():
+    # Find matching entries in ud_data and pp_data
+    ud_match = ud_df[(ud_df['Player_Name'] == row['Player_Name']) & (ud_df['Prop'] == row['Prop'])]
+    pp_match = pp_df[(pp_df['Player_Name'] == row['Player_Name']) & (pp_df['Prop'] == row['Prop'])]
+
+    # Update UD and PP columns if matches are found
+    if not ud_match.empty:
+        df2.at[index, 'UD'] = ud_match.iloc[0]['Line']
+    if not pp_match.empty:
+        df2.at[index, 'PP'] = pp_match.iloc[0]['Line']
+
+#Creates another dataframe with the same columns as df2
+df6 = pd.DataFrame(columns=df2.columns)
+df6['Row_Num'] = range(1, len(df6) + 1)
+
+#I need to figure out what this is doing.
+# Iterate over df2 and insert rows into df6
+for index, row in df2.iterrows():
+    #For each row where UD or PP have odds less than -120
+    if (row['UD'] or row['PP']) and row['Odds'] < -120:
+        # 
+        event_id = row['Event_ID']
+        player_name = row['Player_Name']
+        prop = row['Prop']
+        line = row['Line']
+        matching_lines = df5[(df5['Event_ID'] == event_id) & (df5['Player_Name'] == player_name) & (df5['Prop'] == prop) & (df5['Line'] != line)]
+
+        # Add new rows for different lines
+        new_rows = []
+        for _, match_row in matching_lines.iterrows():
+            new_row = {col: '' for col in df6.columns}  # Use empty strings instead of None
+            new_row['Player_Name'] = player_name  # Keep the player name
+            new_row['Line'] = match_row['Line']  # Insert the different line
+            new_rows.append(new_row)
+
+        # Concatenate the current row and new rows to df6
+
+        df6 = pd.concat([df6, pd.DataFrame([row.to_dict()]), pd.DataFrame(new_rows)], ignore_index=True)
+
+
+df6 = df6[['Event_ID','Prop','Player_Name','Odds','Line','Outcome','UD','PP']]
+
+prop_mapping = {
+                'Points':'PTS',
+                '3-PT Made':'FG3M',
+                'Pts + Reb + Asts':'PTS + REB + AST',
+                'Pts + Rebs':'PTS + REB',
+                'Pts + Asts':'PTS + AST',
+                'Ast + Rebs':'AST + REB',
+                'Rebounds':'REB',
+                'Assists':'AST',
+                'Steals':'STL',
+                'Blocks':'BLK',
+                'Blocks + Steals': 'BLK + STL',
+                'Turnovers':'TOV', 
+}
+
+
+#I need to figure out what this is doing too
+def res(row_number):
+    if 0 <= row_number < len(df6):
+        player_name = df6.at[row_number, 'Player_Name']
+        prop_main_script = df6.at[row_number, 'Prop']
+
+        # Map the prop to the nbaapi prop using the dictionary
+        prop_nbaapi = prop_mapping.get(prop_main_script)
+
+        if prop_nbaapi:
+            result = nbaapi.allprop(player_name, prop_nbaapi)
+            return result
+        else:
+            print(f"Prop '{prop_main_script}' not found in the mapping.")
+            return None
+    else:
+        print("Invalid row number.")
+        return None
 
 #For each player and props, it should:
 
