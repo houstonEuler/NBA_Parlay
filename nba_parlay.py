@@ -106,20 +106,22 @@ for index, row in df2.iterrows():
 df6 = pd.DataFrame(columns=df2.columns)
 df6['Row_Num'] = range(1, len(df6) + 1)
 
-#I need to figure out what this is doing.
+
 # Iterate over df2 and insert rows into df6
 for index, row in df2.iterrows():
     #For each row where UD or PP have odds less than -120
     if (row['UD'] or row['PP']) and row['Odds'] < -120:
-        # 
+        #Match values in database with columns in the dataframe
         event_id = row['Event_ID']
         player_name = row['Player_Name']
         prop = row['Prop']
         line = row['Line']
+        #Create a new dataframe from the prop_data table where the event_id, player_name, and prop are the same, but the line is different. This is to show if the line has moved for a player/prop over time.
         matching_lines = df5[(df5['Event_ID'] == event_id) & (df5['Player_Name'] == player_name) & (df5['Prop'] == prop) & (df5['Line'] != line)]
 
-        # Add new rows for different lines
+        #Create a empty space for new rows
         new_rows = []
+        #Creates new rows that show if lines have changed for a player/prop combination to be combined back into the current_props dataframe
         for _, match_row in matching_lines.iterrows():
             new_row = {col: '' for col in df6.columns}  # Use empty strings instead of None
             new_row['Player_Name'] = player_name  # Keep the player name
@@ -127,12 +129,12 @@ for index, row in df2.iterrows():
             new_rows.append(new_row)
 
         # Concatenate the current row and new rows to df6
-
         df6 = pd.concat([df6, pd.DataFrame([row.to_dict()]), pd.DataFrame(new_rows)], ignore_index=True)
 
-
+#Reorders the dataframe columns
 df6 = df6[['Event_ID','Prop','Player_Name','Odds','Line','Outcome','UD','PP']]
 
+#Creates a mapping of names for certain columns
 prop_mapping = {
                 'Points':'PTS',
                 '3-PT Made':'FG3M',
@@ -149,7 +151,7 @@ prop_mapping = {
 }
 
 
-#I need to figure out what this is doing too
+#Figure out what this does
 def res(row_number):
     if 0 <= row_number < len(df6):
         player_name = df6.at[row_number, 'Player_Name']
