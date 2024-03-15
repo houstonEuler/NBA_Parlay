@@ -151,7 +151,7 @@ prop_mapping = {
 }
 
 
-#Figure out what this does
+#This maps the props from the prop_mapping dictionary listed above to the props in the pandas dataframe
 def res(row_number):
     if 0 <= row_number < len(df6):
         player_name = df6.at[row_number, 'Player_Name']
@@ -170,21 +170,11 @@ def res(row_number):
         print("Invalid row number.")
         return None
 
-#For each player and props, it should:
 
 
+#Next Steps
 
-
-#Retrieve current odds on DK
-
-
-
-
-#Retrieve current odds on UD and PP
-
-
-
-
+#Incorporate stats:
 #Retrieve over/under/equal stats for player and prop
 over_performance = nbastatsanalysis.get_over_performance_for_player()
 under_performance = nbastatsanalysis.get_under_performance_for_player()
@@ -196,11 +186,8 @@ mean_performance = nbastatsanalysis.get_mean_variance_for_player()
 #Retrieve median stats for player and prop
 median_performance = nbastatsanalysis.get_median_variance_for_player()
 
-
-
 #Retrieve variance? for player and prop
-
-
+#Might need to split out variance, or create a better way to view it. A single number is less useful than a few numbers that give a better picture of the distribution.
 
 
 #Retrieve Opponent Stats and Variance? Can this be from an external source???
