@@ -175,7 +175,34 @@ def res(row_number):
 #Next Steps
 
 #Incorporate stats:
+#####################################################
+# Need to update nbastats.db to include player name #
+#####################################################
 #Retrieve over/under/equal stats for player and prop
+for index, row in df6.iterrows():
+    player_name = row['Player_Name']
+    prop = row['Prop']
+
+    over_performance = nbastatsanalysis.get_over_performance_for_player(player_id, prop, line)
+    under_performance = nbastatsanalysis.get_under_performance_for_player(player_id, prop, line)
+    equal_performance = nbastatsanalysis.get_equal_performance_for_player(player_id, prop, line)
+    
+    
+    #Create a new dataframe from the prop_data table where the event_id, player_name, and prop are the same, but the line is different. This is to show if the line has moved for a player/prop over time.
+    matching_lines = df5[(df5['Event_ID'] == event_id) & (df5['Player_Name'] == player_name) & (df5['Prop'] == prop) & (df5['Line'] != line)]
+
+    #Create a empty space for new rows
+    new_rows = []
+    #Creates new rows that show if lines have changed for a player/prop combination to be combined back into the current_props dataframe
+    for _, match_row in matching_lines.iterrows():
+        new_row = {col: '' for col in df6.columns}  # Use empty strings instead of None
+        new_row['Player_Name'] = player_name  # Keep the player name
+        new_row['Line'] = match_row['Line']  # Insert the different line
+        new_rows.append(new_row)
+
+    # Concatenate the current row and new rows to df6
+    df6 = pd.concat([df6, pd.DataFrame([row.to_dict()]), pd.DataFrame(new_rows)], ignore_index=True)    
+
 over_performance = nbastatsanalysis.get_over_performance_for_player()
 under_performance = nbastatsanalysis.get_under_performance_for_player()
 equal_performance = nbastatsanalysis.get_equal_performance_for_player()
