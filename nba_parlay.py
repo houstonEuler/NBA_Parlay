@@ -13,10 +13,6 @@ import nbastatsanalysis
 
 #Maybe create a separate script, that updates the database with additional analysis, like variance and medians for each prop? (see nbastatsanalysis.py)
 
-# Insert call for nbastatsupdater.py
-#
-#
-#
 
 
 #Create connections to databases combodata.db has currently and former props/lines/odds from the DraftKings API, and nba_stats has NBA player stats from the nba_stats API (stored through nbaapi.py)
@@ -27,7 +23,7 @@ props_conn = sqlite3.connect('combodata.db')
 props_cursor = props_conn.cursor()
 
 
-#Use ud.py and pp.py to grab the manually-stored data from their websites
+#Use ud.py and pp.py to load the manually-saved json files from their websites (Their T&Cs disallow any scripts from being run on their websites)
 #Underdog Data: https://api.underdogfantasy.com/beta/v5/over_under_lines
 #Prizepicks Data: https://api.prizepicks.com/projections?league_id=7&per_page=500&state_code=TX&single_stat=true
 ud_data = fetch_ud_data()
@@ -63,7 +59,7 @@ df3 = []
 
 #sorts dataframes
 df = df.sort_values(by=["Prop","Player_Name","Odds","timestamp"])
-df2 = df2.sort_values(by=["Prop","Odds","Player_Name"])
+df2 = df2.sort_values(by=["Odds","Prop","Player_Name"])
 
 #Creates new dataframe, might be unnecessary
 df3 = df[["Event_ID","Prop","Player_Name","Outcome","Odds","Line"]]
@@ -170,8 +166,9 @@ def res(row_number):
         print("Invalid row number.")
         return None
 
+print(df6)
 
-
+'''
 #Next Steps
 
 #Incorporate stats:
@@ -220,5 +217,5 @@ median_performance = nbastatsanalysis.get_median_variance_for_player()
 #Retrieve Opponent Stats and Variance? Can this be from an external source???
 opp_performance = nbastatsanalysis.analyze_player_performance_by_matchup()
 
-
+'''
 

@@ -1,3 +1,4 @@
+~~Update pp2.py to ignore adjusted odds~~
 ~~1. Copy the nba_stats.db to this directory, and run nbastatsupdater.py to get an updated dataset.~~
 ~~add player name to player game logs~~
 ~~run dkstream and download ud/pp.json files~~

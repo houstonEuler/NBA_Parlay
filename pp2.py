@@ -42,6 +42,9 @@ def fetch_pp_data():
     for entry in entries:
         relationships = entry["relationships"]
         new_player_id = relationships["new_player"]["data"]["id"]
+
+        if entry["attributes"]["adjusted_odds"] is not None:
+            continue
         
         # Retrieve display_name and team from the player_data dictionary
         display_name = player_data[new_player_id]["display_name"]
