@@ -11,7 +11,8 @@ cursor = conn.cursor()
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS player_game_logs (
     season_id TEXT,
-    player_id TEXT,    
+    player_id TEXT,
+    player_name TEXT,    
     game_id TEXT,
     game_date TEXT,
     matchup TEXT,
@@ -60,8 +61,8 @@ for player in active_players:
         existing_game_count = cursor.fetchone()[0]
         #If the game_id is not found in the database, it adds the stats from the game to the database
         if existing_game_count == 0:
-            cursor.execute("INSERT INTO player_game_logs ('season_id','player_id','game_id','game_date','matchup','wl','min','fgm','fga','fg_pct','fg3m','fg3a','fg3_pct','ftm','fta','ft_pct','oreb','dreb','reb','ast','stl','blk','tov','pf','pts','plus_minus') VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                (row['SEASON_ID'], row['Player_ID'], row['Game_ID'], row['GAME_DATE'], row['MATCHUP'], row['WL'], row['MIN'], row['FGM'], row['FGA'], row['FG_PCT'], row['FG3M'], row['FG3A'], row['FG3_PCT'], row['FTM'], row['FTA'], row['FT_PCT'], row['OREB'], row['DREB'], row['REB'], row['AST'], row['STL'], row['BLK'], row['TOV'], row['PF'], row['PTS'], row['PLUS_MINUS']))
+            cursor.execute("INSERT INTO player_game_logs ('season_id','player_id','player_name','game_id','game_date','matchup','wl','min','fgm','fga','fg_pct','fg3m','fg3a','fg3_pct','ftm','fta','ft_pct','oreb','dreb','reb','ast','stl','blk','tov','pf','pts','plus_minus') VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                (row['SEASON_ID'], row['Player_ID'], player['full_name'], row['Game_ID'], row['GAME_DATE'], row['MATCHUP'], row['WL'], row['MIN'], row['FGM'], row['FGA'], row['FG_PCT'], row['FG3M'], row['FG3A'], row['FG3_PCT'], row['FTM'], row['FTA'], row['FT_PCT'], row['OREB'], row['DREB'], row['REB'], row['AST'], row['STL'], row['BLK'], row['TOV'], row['PF'], row['PTS'], row['PLUS_MINUS']))
             conn.commit()
     #Prints the player_id and player name as it progresses through the list of players
     print(f"Player ID: {player['id']} - {player['full_name']}")

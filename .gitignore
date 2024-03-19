@@ -161,3 +161,4 @@ cython_debug/
 
 nba_stats.db
 combodata.db
+old_nba_stats.db

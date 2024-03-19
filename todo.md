@@ -1,7 +1,10 @@
+add player name to player game logs
+
+
+
 ~~1. Copy the nba_stats.db to this directory, and run nbastatsupdater.py to get an updated dataset.~~
 2. Create functions for nbastatsanalysis.py, which will return the desired stats, and confirm they're working.
-    ~~a. Function to get odds from dkstream~~
-    ~~b. Function to add lines from UD/PP~~
+
     c. Function to get stats from nbastats.db
         i. Calculate the number of greater/equal/less games
         ii. Grab opponent stats from hashtagbasketball.com, fanduel, or https://www.bettingpros.com/nba/defense-vs-position/ (same as fanduel) for comparison.
