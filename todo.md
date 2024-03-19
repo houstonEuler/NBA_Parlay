@@ -1,8 +1,6 @@
-add player name to player game logs
-
-
-
 ~~1. Copy the nba_stats.db to this directory, and run nbastatsupdater.py to get an updated dataset.~~
+~~add player name to player game logs~~
+~~run dkstream and download ud/pp.json files~~
 2. Create functions for nbastatsanalysis.py, which will return the desired stats, and confirm they're working.
 
     c. Function to get stats from nbastats.db
