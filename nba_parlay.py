@@ -166,6 +166,46 @@ def res(row_number):
         print("Invalid row number.")
         return None
 
+def calculate_performance(row):
+    # Connect to the database
+    stats_conn = sqlite3.connect('nba_stats.db')
+    stats_cursor = stats_conn.cursor()
+
+    # Fetch player_id from nbastats.db based on player_name
+    player_name = row['Player_Name']
+    prop = row['Prop']
+
+    # Map the prop to the corresponding value in the prop_mapping dictionary
+    mapped_prop = prop_mapping.get(prop)
+    if not mapped_prop:
+        print(f"Prop '{prop}' not found in the mapping.")
+        return None, None, None
+
+    stats_cursor.execute("SELECT player_id FROM player_game_logs WHERE player_name = ?", (player_name,))
+    player_id = stats_cursor.fetchone()
+    if player_id:
+        player_id = player_id[0]  # Extracting player_id from tuple
+
+        # Call functions from nbastatsanalysis.py to calculate performance values
+        over_performance = nbastatsanalysis.get_over_performance_for_player(player_id, mapped_prop, row['Line'])
+        under_performance = nbastatsanalysis.get_under_performance_for_player(player_id, mapped_prop, row['Line'])
+        equal_performance = nbastatsanalysis.get_equal_performance_for_player(player_id, mapped_prop, row['Line'])
+        
+        # Close the connection
+        stats_conn.close()
+
+        return over_performance, under_performance, equal_performance
+    else:
+        # Close the connection
+        stats_conn.close()
+
+        return None, None, None
+
+
+df6['Over_Performance'], df6['Under_Performance'], df6['Equal_Performance'] = zip(*df6.apply(calculate_performance, axis=1))
+
+df6 = df6[['Event_ID', 'Prop', 'Player_Name', 'Odds', 'Line', 'Outcome', 'UD', 'PP', 'Over_Performance', 'Under_Performance', 'Equal_Performance']]
+
 print(df6)
 
 '''
