@@ -191,10 +191,18 @@ def calculate_performance(row):
         under_performance = nbastatsanalysis.get_under_performance_for_player(player_id, mapped_prop, row['Line'])
         equal_performance = nbastatsanalysis.get_equal_performance_for_player(player_id, mapped_prop, row['Line'])
         
+        # Convert performance columns to numeric data type
+        df6['Over_Performance'] = pd.to_numeric(df6['Over_Performance'], errors='coerce')
+        df6['Under_Performance'] = pd.to_numeric(df6['Under_Performance'], errors='coerce')
+        df6['Equal_Performance'] = pd.to_numeric(df6['Equal_Performance'], errors='coerce')
+        
         # Close the connection
         stats_conn.close()
 
-        return over_performance, under_performance, equal_performance
+        # Return counts, ensuring to handle empty lists
+        return len(over_performance) if over_performance else 0, \
+               len(under_performance) if under_performance else 0, \
+               len(equal_performance) if equal_performance else 0
     else:
         # Close the connection
         stats_conn.close()
