@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS player_game_logs (
 conn.commit()
 
 #Sets a delay between requests to avoid overloading the server or getting flagged.
-player_request_delay = 10  # Adjust this value as needed
+player_request_delay = 7  # Adjust this value as needed
 
 #Gets a list of active players from the nbaapi.py file
 active_players = nbaapi.active_players
@@ -56,8 +56,9 @@ for player in active_players:
     #For each row in the game logs, it gets the game_id. 
     for index, row in player_game_logs.iterrows():
         game_id = row['Game_ID']
+        player_id = player['id']
         # Check if the game with the same game_id already exists in the database
-        cursor.execute("SELECT COUNT(*) FROM player_game_logs WHERE game_id=?", (game_id,))
+        cursor.execute("SELECT COUNT(*) FROM player_game_logs WHERE game_id=? AND player_id =?", (game_id,player_id,))
         existing_game_count = cursor.fetchone()[0]
         #If the game_id is not found in the database, it adds the stats from the game to the database
         if existing_game_count == 0:
