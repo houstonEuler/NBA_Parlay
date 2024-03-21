@@ -219,11 +219,30 @@ df6 = df6[['Event_ID', 'Prop', 'Player_Name', 'Odds', 'Line', 'Outcome', 'UD', '
 
 df6['Over_Under Diff'] = df6['Over_Performance'] - df6['Under_Performance']
 
+df6['Ratio'] = df6['Over_Performance']/df6['Under_Performance']
+
+df6 = df6.sort_values(by=['Ratio','Prop','Odds'])
+
+df7 = df6.sort_values(by=['Odds','Prop','Ratio'])
+
+df8 = df6.sort_values(by=['Prop','Odds','Ratio'])
 
 print(df6)
+print(df7)
+print(df8)
 
 '''
 #Next Steps
+
+### Need to fix the sort, so the changes in odds are in-line with the data.
+
+### Need to add more recent data for comparison, to avoid situations where someone's playing time has increased recently
+
+### Need to incorporate opponent data
+
+
+
+
 
 #Incorporate stats:
 #####################################################
