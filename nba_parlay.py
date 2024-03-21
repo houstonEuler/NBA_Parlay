@@ -51,8 +51,8 @@ df2 = curr_prop_data[["Prop","Event_ID","Player_Name","Outcome","Odds","Line"]]
 props_conn.close()
 
 #strips any extra spaces from player names
-df['Player_Name'] = df['Player_Name'].str.strip()
-df2['Player_Name'] = df2['Player_Name'].str.strip()
+df.loc[:, 'Player_Name'] = df['Player_Name'].str.strip()
+df2.loc[:, 'Player_Name'] = df2['Player_Name'].str.strip()
 
 #creates a new dataframe
 df3 = []
@@ -166,6 +166,9 @@ def res(row_number):
         print("Invalid row number.")
         return None
 
+df6['Over_Performance'] = 0
+df6['Under_Performance'] = 0
+
 def calculate_performance(row):
     # Connect to the database
     stats_conn = sqlite3.connect('nba_stats.db')
@@ -189,20 +192,16 @@ def calculate_performance(row):
         # Call functions from nbastatsanalysis.py to calculate performance values
         over_performance = nbastatsanalysis.get_over_performance_for_player(player_id, mapped_prop, row['Line'])
         under_performance = nbastatsanalysis.get_under_performance_for_player(player_id, mapped_prop, row['Line'])
-        equal_performance = nbastatsanalysis.get_equal_performance_for_player(player_id, mapped_prop, row['Line'])
         
         # Convert performance columns to numeric data type
         df6['Over_Performance'] = pd.to_numeric(df6['Over_Performance'], errors='coerce')
         df6['Under_Performance'] = pd.to_numeric(df6['Under_Performance'], errors='coerce')
-        df6['Equal_Performance'] = pd.to_numeric(df6['Equal_Performance'], errors='coerce')
         
         # Close the connection
         stats_conn.close()
 
-        # Return counts, ensuring to handle empty lists
-        return len(over_performance) if over_performance else 0, \
-               len(under_performance) if under_performance else 0, \
-               len(equal_performance) if equal_performance else 0
+        # Return values
+        return len(over_performance), len(under_performance)
     else:
         # Close the connection
         stats_conn.close()
@@ -210,9 +209,16 @@ def calculate_performance(row):
         return None, None, None
 
 
-df6['Over_Performance'], df6['Under_Performance'], df6['Equal_Performance'] = zip(*df6.apply(calculate_performance, axis=1))
+df6['Over_Performance'], df6['Under_Performance'] = zip(*df6.apply(calculate_performance, axis=1))
 
-df6 = df6[['Event_ID', 'Prop', 'Player_Name', 'Odds', 'Line', 'Outcome', 'UD', 'PP', 'Over_Performance', 'Under_Performance', 'Equal_Performance']]
+df6['Over_Performance'] = pd.to_numeric(df6['Over_Performance'], errors='coerce')
+df6['Under_Performance'] = pd.to_numeric(df6['Under_Performance'], errors='coerce')
+
+
+df6 = df6[['Event_ID', 'Prop', 'Player_Name', 'Odds', 'Line', 'Outcome', 'UD', 'PP', 'Over_Performance', 'Under_Performance']]
+
+df6['Over_Under Diff'] = df6['Over_Performance'] - df6['Under_Performance']
+
 
 print(df6)
 
