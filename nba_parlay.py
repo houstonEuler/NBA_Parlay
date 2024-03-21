@@ -134,15 +134,15 @@ df6 = df6[['Event_ID','Prop','Player_Name','Odds','Line','Outcome','UD','PP']]
 prop_mapping = {
                 'Points':'PTS',
                 '3-PT Made':'FG3M',
-                'Pts + Reb + Asts':'PTS + REB + AST',
-                'Pts + Rebs':'PTS + REB',
-                'Pts + Asts':'PTS + AST',
-                'Ast + Rebs':'AST + REB',
+                'Pts + Reb + Asts':'PTS_REB_AST',
+                'Pts + Rebs':'PTS_REB',
+                'Pts + Asts':'PTS_AST',
+                'Ast + Rebs':'AST_REB',
                 'Rebounds':'REB',
                 'Assists':'AST',
                 'Steals':'STL',
                 'Blocks':'BLK',
-                'Blocks + Steals': 'BLK + STL',
+                'Blocks + Steals': 'BLK_STL',
                 'Turnovers':'TOV', 
 }
 

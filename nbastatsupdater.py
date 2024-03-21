@@ -61,9 +61,14 @@ for player in active_players:
         cursor.execute("SELECT COUNT(*) FROM player_game_logs WHERE game_id=? AND player_id =?", (game_id,player_id,))
         existing_game_count = cursor.fetchone()[0]
         #If the game_id is not found in the database, it adds the stats from the game to the database
+        pts_reb_ast = row['PTS'] + row['REB'] + row['AST']
+        pts_reb = row['PTS'] + row['REB']
+        pts_ast = row['PTS'] + row['AST']
+        ast_reb = row['AST'] + row['REB']
+        blk_stl = row['BLK'] + row['STL']
         if existing_game_count == 0:
-            cursor.execute("INSERT INTO player_game_logs ('season_id','player_id','player_name','game_id','game_date','matchup','wl','min','fgm','fga','fg_pct','fg3m','fg3a','fg3_pct','ftm','fta','ft_pct','oreb','dreb','reb','ast','stl','blk','tov','pf','pts','plus_minus') VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                (row['SEASON_ID'], row['Player_ID'], player['full_name'], row['Game_ID'], row['GAME_DATE'], row['MATCHUP'], row['WL'], row['MIN'], row['FGM'], row['FGA'], row['FG_PCT'], row['FG3M'], row['FG3A'], row['FG3_PCT'], row['FTM'], row['FTA'], row['FT_PCT'], row['OREB'], row['DREB'], row['REB'], row['AST'], row['STL'], row['BLK'], row['TOV'], row['PF'], row['PTS'], row['PLUS_MINUS']))
+            cursor.execute("INSERT INTO player_game_logs ('season_id', 'player_id', 'player_name', 'game_id', 'game_date', 'matchup', 'wl', 'min', 'fgm', 'fga', 'fg_pct', 'fg3m', 'fg3a', 'fg3_pct', 'ftm', 'fta', 'ft_pct', 'oreb', 'dreb', 'reb', 'ast', 'stl', 'blk', 'tov', 'pf', 'pts', 'plus_minus', 'pts_reb_ast', 'pts_reb', 'pts_ast', 'ast_reb', 'blk_stl') VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                (row['SEASON_ID'], row['Player_ID'], player['full_name'], row['Game_ID'], row['GAME_DATE'], row['MATCHUP'], row['WL'], row['MIN'], row['FGM'], row['FGA'], row['FG_PCT'], row['FG3M'], row['FG3A'], row['FG3_PCT'], row['FTM'], row['FTA'], row['FT_PCT'], row['OREB'], row['DREB'], row['REB'], row['AST'], row['STL'], row['BLK'], row['TOV'], row['PF'], row['PTS'], row['PLUS_MINUS'], pts_reb_ast, pts_reb, pts_ast, ast_reb, blk_stl))
             conn.commit()
     #Prints the player_id and player name as it progresses through the list of players
     print(f"Player ID: {player['id']} - {player['full_name']}")
