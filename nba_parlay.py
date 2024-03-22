@@ -221,15 +221,20 @@ df6['Over_Under Diff'] = df6['Over_Performance'] - df6['Under_Performance']
 
 df6['Ratio'] = df6['Over_Performance']/df6['Under_Performance']
 
-df6 = df6.sort_values(by=['Ratio','Prop','Odds'])
-
 df7 = df6.sort_values(by=['Odds','Prop','Ratio'])
 
 df8 = df6.sort_values(by=['Prop','Odds','Ratio'])
 
+df9 = df6.sort_values(by=['Ratio','Prop','Odds'])
+
+print("DF6---------------------------------------------------------------------------DF6")
 print(df6)
+print("DF7---------------------------------------------------------------------------DF7")
 print(df7)
+print("DF8---------------------------------------------------------------------------DF8")
 print(df8)
+print("DF9---------------------------------------------------------------------------DF9")
+print(df9)
 
 '''
 #Next Steps
