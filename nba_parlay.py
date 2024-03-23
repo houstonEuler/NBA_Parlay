@@ -84,6 +84,7 @@ pp_df = pd.DataFrame(pp_data)
 name_mapping = {
                 'Cameron Johnson' : 'Cam Johnson',
                 'Cameron Thomas' : 'Cam Thomas',
+                'Nicolas Claxton': 'Nic Claxton',
 }
 
 #Checks if the current prop database matches the player and prop from underdog and prizepicks. If it's not blank, it adds the line to the df2 dataframe for the respective site.

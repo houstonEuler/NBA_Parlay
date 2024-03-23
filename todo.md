@@ -1,3 +1,4 @@
+0. Fix Nic Claxton, he's not being recognized. Also, re-run nbastatsupdater.py
 1. Add columns for last 5/10 games, and ratios for last 5/10 games
 2. Get opponent stats from hashtagbasketball.com, fanduel, or https://www.bettingpros.com/nba/defense-vs-position/ (same as fanduel) for comparison.
 3. Fix warning
