@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS player_game_logs (
 conn.commit()
 
 #Sets a delay between requests to avoid overloading the server or getting flagged.
-player_request_delay = 7  # Adjust this value as needed
+player_request_delay = 10  # Adjust this value as needed
 
 #Gets a list of active players from the nbaapi.py file
 active_players = nbaapi.active_players
