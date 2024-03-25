@@ -1,6 +1,6 @@
 from nba_api.stats.static import players
 from nba_api.stats.static import teams
-from nba_api.stats.endpoints import playergamelog
+from nba_api.stats.endpoints import playergamelogs
 import pandas as pd
 from nba_api.stats.endpoints import shotchartdetail
 from nba_api.stats.endpoints import playercareerstats
@@ -33,7 +33,7 @@ def find_player_id(name):
 
 #Returns player game logs based on their player_id and the season.
 def get_player_game_logs(player_id, season):
-    game_logs = playergamelog.PlayerGameLog(player_id=player_id, season=season)
+    game_logs = playergamelogs.PlayerGameLogs(player_id_nullable=player_id, season_nullable=season)
     return game_logs.get_data_frames()[0]
 
 #Returns a team_id based on the team name, can use either the full name or their abbreviation.
@@ -48,13 +48,13 @@ def get_career_stats(player_id):
 
 #Returns a player's game logs against a specific team
 def get_player_game_logs_against_team(player_id, team_abbreviation, season):
-    game_logs = playergamelog.PlayerGameLog(player_id=player_id, season=season)
+    game_logs = playergamelogs.PlayerGameLogs(player_id_nullable=player_id, season_nullable=season)
     df = game_logs.get_data_frames()[0]
     return df[df['MATCHUP'].str.contains(team_abbreviation)]
 
 #Returns all of a player's previous games played against a team, as well as additional combo stats
 def get_player_stats_against_team(player_id, team_abbreviation):
-    game_logs = playergamelog.PlayerGameLog(player_id=player_id, season=SeasonAll.all)
+    game_logs = playergamelogs.PlayerGameLogs(player_id_nullable=player_id, season_nullable=SeasonAll.all)
     df = game_logs.get_data_frames()[0]
     all_games = df[df['MATCHUP'].str.contains(team_abbreviation)]
     stats = all_games[['GAME_DATE','MATCHUP','MIN','PTS', 'REB', 'AST','FG3M','STL','BLK','TOV']].copy()
@@ -79,7 +79,7 @@ def get_current_team_roster(team_id):
 #Returns stats and combo stats for a player's last five games in a season
 def get_last_five_games_stats(player_id, season):
     # Fetching the player's game logs for the specified season
-    game_logs = playergamelog.PlayerGameLog(player_id=player_id, season=season)
+    game_logs = playergamelogs.PlayerGameLogs(player_id_nullable=player_id, season_nullable=season)
     df = game_logs.get_data_frames()[0]
     
     # Sorting the games by date and selecting the last five games
@@ -95,7 +95,7 @@ def get_last_five_games_stats(player_id, season):
 
 #Returns stats and combo stats for a player in the 2023 season.
 def get_current_game_logs(player_id):
-    game_logs = playergamelog.PlayerGameLog(player_id=player_id, season=2023)
+    game_logs = playergamelogs.PlayerGameLogs(player_id_nullable=player_id, season_nullable=2023)
     df = game_logs.get_data_frames()[0]
 
     this_season = df

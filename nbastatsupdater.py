@@ -47,14 +47,21 @@ CREATE TABLE IF NOT EXISTS player_game_logs (
 conn.commit()
 
 #Sets a delay between requests to avoid overloading the server or getting flagged.
-player_request_delay = 12  # Adjust this value as needed
+player_request_delay = 15  # Adjust this value as needed
 
 #Gets a list of active players from the nbaapi.py file
 active_players = nbaapi.active_players
 
 #For each player in active players, gets the current years (2023) game logs. 
 for player in active_players:
-    player_game_logs = nbaapi.get_player_game_logs(player['id'],2023)
+    while True:
+        try:
+            player_game_logs = nbaapi.get_player_game_logs(player['id'],2023)
+            break 
+        except Exception as e:  
+            print(f"Error retrieving game logs for player ID: {player['id']} - {player['full_name']}. Waiting 2 minutes before retrying...")
+            time.sleep(120)  # Wait for 2 minutes before retrying
+            
     #For each row in the game logs, it gets the game_id. 
     for index, row in player_game_logs.iterrows():
         game_id = row['Game_ID']
