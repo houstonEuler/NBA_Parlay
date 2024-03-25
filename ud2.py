@@ -44,10 +44,13 @@ def fetch_ud_data():
         prop_name = item["over_under"]["appearance_stat"]["display_stat"]
         standardized_prop_name = ud_mapping.get(prop_name, prop_name)
 
+        # Check if payout_multiplier is 1.0
+        payout_multiplier = float(item['options'][0]['payout_multiplier'])  # Assuming all options have same payout_multiplier
         ud_data.append({
             'Player_Name': full_name,
             "Prop": standardized_prop_name,
             "Line": item["stat_value"],
+            "Multiplier": payout_multiplier
         })
         
     return ud_data

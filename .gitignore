@@ -163,3 +163,6 @@ nba_stats.db
 combodata.db
 old_nba_stats.db
 nba_stats copy.db
+
+pp.json
+ud.json

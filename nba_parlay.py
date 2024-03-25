@@ -74,6 +74,7 @@ df5 = df5.drop_duplicates()
 
 #Adds new columns to dataframe 2 for Underdog and Prizepicks lines
 df2['UD'] = ''
+df2['Mtpl'] = ''
 df2['PP'] = ''
 
 #Creates dataframes for those lines from the uploaded data
@@ -96,6 +97,7 @@ for index, row in df2.iterrows():
     # Update UD and PP columns if matches are found
     if not ud_match.empty:
         df2.at[index, 'UD'] = ud_match.iloc[0]['Line']
+        df2.at[index, 'Mtpl'] = ud_match.iloc[0]['Multiplier']
     if not pp_match.empty:
         df2.at[index, 'PP'] = pp_match.iloc[0]['Line']
 
@@ -129,7 +131,7 @@ for index, row in df2.iterrows():
         df6 = pd.concat([df6, pd.DataFrame([row.to_dict()]), pd.DataFrame(new_rows)], ignore_index=True)
 
 #Reorders the dataframe columns
-df6 = df6[['Event_ID','Prop','Player_Name','Odds','Line','Outcome','UD','PP']]
+df6 = df6[['Event_ID','Prop','Player_Name','Odds','Line','Outcome','UD','Mtpl','PP']]
 
 #Creates a mapping of names for certain columns
 prop_mapping = {
@@ -216,7 +218,7 @@ df6['Over_Performance'] = pd.to_numeric(df6['Over_Performance'], errors='coerce'
 df6['Under_Performance'] = pd.to_numeric(df6['Under_Performance'], errors='coerce')
 
 
-df6 = df6[['Event_ID', 'Prop', 'Player_Name', 'Odds', 'Line', 'Outcome', 'UD', 'PP', 'Over_Performance', 'Under_Performance']]
+df6 = df6[['Event_ID', 'Prop', 'Player_Name', 'Odds', 'Line', 'Outcome', 'UD', 'Mtpl', 'PP', 'Over_Performance', 'Under_Performance']]
 
 df6['Over_Under Diff'] = df6['Over_Performance'] - df6['Under_Performance']
 
