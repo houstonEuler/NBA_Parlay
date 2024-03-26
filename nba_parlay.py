@@ -174,7 +174,7 @@ df6['Under_Performance'] = 0
 
 def calculate_performance(row):
     # Connect to the database
-    stats_conn = sqlite3.connect('nba_stats.db')
+    stats_conn = sqlite3.connect('nba_stats_old.db')
     stats_cursor = stats_conn.cursor()
 
     # Fetch player_id from nbastats.db based on player_name
