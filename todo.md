@@ -1,6 +1,5 @@
--2. Find out why nbastatsupdater isn't working with playergamelogs from nba_api
--1. Fix nbastatsupdater.py
-0. Fix Nic Claxton, his stats are not being recognized. Also, re-run nbastatsupdater.py
+-1. Add function that adds a team name to each player row, by parsing the matchup column for what I assume is the first value.
+0. Fix Nic Claxton, his stats are not being recognized as well as Vit Krejic. Also, re-run nbastatsupdater.py
 1. Add columns for last 5/10 games, and ratios for last 5/10 games
 2. Get opponent stats from hashtagbasketball.com, fanduel, or https://www.bettingpros.com/nba/defense-vs-position/ (same as fanduel) for comparison.
 3. Fix warning
