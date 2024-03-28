@@ -12,9 +12,7 @@ cursor.execute("""
 CREATE TABLE IF NOT EXISTS player_game_logs (
     season_id TEXT,
     player_id TEXT,
-    player_name TEXT,
-    team_abbr TEXT,
-    team_name TEXT,    
+    player_name TEXT,   
     game_id TEXT,
     game_date TEXT,
     matchup TEXT,
@@ -38,7 +36,13 @@ CREATE TABLE IF NOT EXISTS player_game_logs (
     tov INTEGER,
     pf INTEGER,
     pts INTEGER,
-    plus_minus INTEGER  
+    plus_minus INTEGER,
+    pts_reb_ast INTEGER,
+    pts_reb INTEGER,
+    pts_ast INTEGER,
+    ast_reb INTEGER,
+    blk_stl INTEGER
+               
 )
 """)
 
@@ -47,7 +51,7 @@ CREATE TABLE IF NOT EXISTS player_game_logs (
 conn.commit()
 
 #Sets a delay between requests to avoid overloading the server or getting flagged.
-player_request_delay = 15  # Adjust this value as needed
+player_request_delay = 12  # Adjust this value as needed
 
 #Gets a list of active players from the nbaapi.py file
 active_players = nbaapi.active_players
@@ -56,14 +60,14 @@ active_players = nbaapi.active_players
 for player in active_players:
     while True:
         try:
-            player_game_logs = nbaapi.get_player_game_logs(player['id'],2023)
+            player_game_log = nbaapi.get_player_game_logs(player['id'],2023)
             break 
         except Exception as e:  
             print(f"Error retrieving game logs for player ID: {player['id']} - {player['full_name']}. Waiting 2 minutes before retrying...")
             time.sleep(120)  # Wait for 2 minutes before retrying
             
     #For each row in the game logs, it gets the game_id. 
-    for index, row in player_game_logs.iterrows():
+    for index, row in player_game_log.iterrows():
         game_id = row['Game_ID']
         player_id = player['id']
         # Check if the game with the same game_id already exists in the database
@@ -76,8 +80,8 @@ for player in active_players:
         ast_reb = row['AST'] + row['REB']
         blk_stl = row['BLK'] + row['STL']
         if existing_game_count == 0:
-            cursor.execute("INSERT INTO player_game_logs ('season_id', 'player_id', 'player_name', 'team_abbr', 'team_name', 'game_id', 'game_date', 'matchup', 'wl', 'min', 'fgm', 'fga', 'fg_pct', 'fg3m', 'fg3a', 'fg3_pct', 'ftm', 'fta', 'ft_pct', 'oreb', 'dreb', 'reb', 'ast', 'stl', 'blk', 'tov', 'pf', 'pts', 'plus_minus', 'pts_reb_ast', 'pts_reb', 'pts_ast', 'ast_reb', 'blk_stl') VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                (row['SEASON_ID'], row['Player_ID'], player['full_name'], row['TEAM_ABBREVIATION'], row['TEAM_NAME'], row['Game_ID'], row['GAME_DATE'], row['MATCHUP'], row['WL'], row['MIN'], row['FGM'], row['FGA'], row['FG_PCT'], row['FG3M'], row['FG3A'], row['FG3_PCT'], row['FTM'], row['FTA'], row['FT_PCT'], row['OREB'], row['DREB'], row['REB'], row['AST'], row['STL'], row['BLK'], row['TOV'], row['PF'], row['PTS'], row['PLUS_MINUS'], pts_reb_ast, pts_reb, pts_ast, ast_reb, blk_stl))
+            cursor.execute("INSERT INTO player_game_logs ('season_id', 'player_id', 'player_name', 'game_id', 'game_date', 'matchup', 'wl', 'min', 'fgm', 'fga', 'fg_pct', 'fg3m', 'fg3a', 'fg3_pct', 'ftm', 'fta', 'ft_pct', 'oreb', 'dreb', 'reb', 'ast', 'stl', 'blk', 'tov', 'pf', 'pts', 'plus_minus', 'pts_reb_ast', 'pts_reb', 'pts_ast', 'ast_reb', 'blk_stl') VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                (row['SEASON_ID'], row['Player_ID'], player['full_name'], row['Game_ID'], row['GAME_DATE'], row['MATCHUP'], row['WL'], row['MIN'], row['FGM'], row['FGA'], row['FG_PCT'], row['FG3M'], row['FG3A'], row['FG3_PCT'], row['FTM'], row['FTA'], row['FT_PCT'], row['OREB'], row['DREB'], row['REB'], row['AST'], row['STL'], row['BLK'], row['TOV'], row['PF'], row['PTS'], row['PLUS_MINUS'], pts_reb_ast, pts_reb, pts_ast, ast_reb, blk_stl))
             conn.commit()
     #Prints the player_id and player name as it progresses through the list of players
     print(f"Player ID: {player['id']} - {player['full_name']}")

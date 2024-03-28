@@ -8,7 +8,7 @@ import numpy as np
 #Analyze player performance for each prop
 def get_over_performance_for_player(player_id, prop, line):
     # Connect to the database
-    conn = sqlite3.connect('nba_stats_old.db')
+    conn = sqlite3.connect('nba_stats.db')
     cursor = conn.cursor()
     
     # Query to get the values of the specified column for the given player_id
@@ -25,7 +25,7 @@ def get_over_performance_for_player(player_id, prop, line):
 
 def get_under_performance_for_player(player_id, prop, line):
     # Connect to the database
-    conn = sqlite3.connect('nba_stats_old.db')
+    conn = sqlite3.connect('nba_stats.db')
     cursor = conn.cursor()
     
     # Query to get the values of the specified column for the given player_id
