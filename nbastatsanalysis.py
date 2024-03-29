@@ -63,7 +63,7 @@ def get_last_ten(player_id, prop):
     cursor = conn.cursor()
     
     # Fetch the last 10 results for the player and prop
-    query = f"SELECT {prop} FROM player_game_logs WHERE player_id = ? ORDER BY game_date DESC LIMIT 10"
+    query = f"SELECT {prop} FROM player_game_logs WHERE player_id = ? ORDER BY DATE(game_date) DESC LIMIT 10"
     cursor.execute(query, (player_id,))
 
     # Fetch all the last 10 results
