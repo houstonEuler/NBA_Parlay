@@ -171,6 +171,7 @@ def res(row_number):
 
 df6['Over_Performance'] = 0
 df6['Under_Performance'] = 0
+df6['Last_10_Results'] = ''
 
 def calculate_performance(row):
     # Connect to the database
@@ -195,7 +196,10 @@ def calculate_performance(row):
         # Call functions from nbastatsanalysis.py to calculate performance values
         over_performance = nbastatsanalysis.get_over_performance_for_player(player_id, mapped_prop, row['Line'])
         under_performance = nbastatsanalysis.get_under_performance_for_player(player_id, mapped_prop, row['Line'])
-        
+
+        # Get the last 10 results for the player and prop
+        last_10_results = nbastatsanalysis.get_last_ten(player_id, mapped_prop)
+
         # Convert performance columns to numeric data type
         df6['Over_Performance'] = pd.to_numeric(df6['Over_Performance'], errors='coerce')
         df6['Under_Performance'] = pd.to_numeric(df6['Under_Performance'], errors='coerce')
@@ -204,7 +208,7 @@ def calculate_performance(row):
         stats_conn.close()
 
         # Return values
-        return len(over_performance), len(under_performance)
+        return len(over_performance), len(under_performance), last_10_results
     else:
         # Close the connection
         stats_conn.close()
@@ -212,17 +216,19 @@ def calculate_performance(row):
         return None, None, None
 
 
-df6['Over_Performance'], df6['Under_Performance'] = zip(*df6.apply(calculate_performance, axis=1))
+df6['Over_Performance'], df6['Under_Performance'], df6['Last_10_Results'] = zip(*df6.apply(calculate_performance, axis=1))
 
 df6['Over_Performance'] = pd.to_numeric(df6['Over_Performance'], errors='coerce')
 df6['Under_Performance'] = pd.to_numeric(df6['Under_Performance'], errors='coerce')
 
 
-df6 = df6[['Event_ID', 'Prop', 'Player_Name', 'Odds', 'Line', 'Outcome', 'UD', 'Mtpl', 'PP', 'Over_Performance', 'Under_Performance']]
+df6 = df6[['Event_ID', 'Prop', 'Player_Name', 'Odds', 'Line', 'Outcome', 'UD', 'Mtpl', 'PP', 'Over_Performance', 'Under_Performance', 'Last_10_Results']]
 
 df6['Over_Under Diff'] = df6['Over_Performance'] - df6['Under_Performance']
 
 df6['Ratio'] = df6['Over_Performance']/df6['Under_Performance']
+
+df6 = df6[['Event_ID', 'Prop', 'Player_Name', 'Odds', 'Line', 'Outcome', 'UD', 'Mtpl', 'PP', 'Over_Performance', 'Under_Performance', 'Over_Under Diff', 'Ratio', 'Last_10_Results']]
 
 df7 = df6.sort_values(by=['Odds','Prop','Ratio'])
 

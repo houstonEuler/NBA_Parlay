@@ -56,7 +56,26 @@ def get_equal_performance_for_player(player_id, prop, line):
     conn.close()
     
     return equal_values
+
+def get_last_ten(player_id, prop):
+    # Connect to the database
+    conn = sqlite3.connect('nba_stats.db')
+    cursor = conn.cursor()
     
+    # Fetch the last 10 results for the player and prop
+    query = f"SELECT {prop} FROM player_game_logs WHERE player_id = ? ORDER BY game_date DESC LIMIT 10"
+    cursor.execute(query, (player_id,))
+
+    # Fetch all the last 10 results
+    last_10_results = [str(row[0]) for row in cursor.fetchall()]  # Convert to strings
+
+    # Close the database connection
+    conn.close()
+
+    # Convert the last 10 results to a comma-separated string
+    results_string = ', '.join(last_10_results)
+
+    return results_string
 
 
 #Mean and Variance
