@@ -40,13 +40,47 @@ def get_under_performance_for_player(player_id, prop, line):
     
     return under_values
 
+def get_over_performance_for_last_ten(player_id, prop, line):
+    # Connect to the database
+    conn = sqlite3.connect('nba_stats.db')
+    cursor = conn.cursor()
+    
+    # Query to get the values of the specified column for the given player_id
+    query = f"SELECT {prop} FROM player_game_logs WHERE player_id = ? AND {prop} > ?"
+    cursor.execute(query, (player_id, line))
+
+    # Fetch all the values of the specified column that are over the line
+    over_values = [row[0] for row in cursor.fetchall()]
+
+    # Close the database connection
+    conn.close()
+    
+    return over_values
+
+def get_under_performance_for_last_ten(player_id, prop, line):
+    # Connect to the database
+    conn = sqlite3.connect('nba_stats.db')
+    cursor = conn.cursor()
+    
+    # Query to get the values of the specified column for the given player_id
+    query = f"SELECT {prop} FROM player_game_logs WHERE player_id = ? AND {prop} < ? ORDER BY DATE(game_date) DESC LIMIT 10"
+    cursor.execute(query, (player_id, line))
+
+    # Fetch all the values of the specified column that are over the line
+    under_values = [row[0] for row in cursor.fetchall()]
+
+    # Close the database connection
+    conn.close()
+    
+    return under_values
+
 def get_equal_performance_for_player(player_id, prop, line):
     # Connect to the database
     conn = sqlite3.connect('nba_stats.db')
     cursor = conn.cursor()
     
     # Query to get the values of the specified column for the given player_id
-    query = f"SELECT {prop} FROM player_game_logs WHERE player_id = ? AND {prop} = ?"
+    query = f"SELECT {prop} FROM player_game_logs WHERE player_id = ? AND {prop} = ? ORDER BY DATE(game_date) DESC LIMIT 10"
     cursor.execute(query, (player_id, line))
 
     # Fetch all the values of the specified column that are over the line

@@ -108,27 +108,25 @@ df6['Row_Num'] = range(1, len(df6) + 1)
 
 # Iterate over df2 and insert rows into df6
 for index, row in df2.iterrows():
-    #For each row where UD or PP have odds less than -120
-    if (row['UD'] or row['PP']) and row['Odds'] < -120:
-        #Match values in database with columns in the dataframe
-        event_id = row['Event_ID']
-        player_name = row['Player_Name']
-        prop = row['Prop']
-        line = row['Line']
-        #Create a new dataframe from the prop_data table where the event_id, player_name, and prop are the same, but the line is different. This is to show if the line has moved for a player/prop over time.
-        matching_lines = df5[(df5['Event_ID'] == event_id) & (df5['Player_Name'] == player_name) & (df5['Prop'] == prop) & (df5['Line'] != line)]
+    #Match values in database with columns in the dataframe
+    event_id = row['Event_ID']
+    player_name = row['Player_Name']
+    prop = row['Prop']
+    line = row['Line']
+    #Create a new dataframe from the prop_data table where the event_id, player_name, and prop are the same, but the line is different. This is to show if the line has moved for a player/prop over time.
+    matching_lines = df5[(df5['Event_ID'] == event_id) & (df5['Player_Name'] == player_name) & (df5['Prop'] == prop) & (df5['Line'] != line)]
 
-        #Create a empty space for new rows
-        new_rows = []
-        #Creates new rows that show if lines have changed for a player/prop combination to be combined back into the current_props dataframe
-        for _, match_row in matching_lines.iterrows():
-            new_row = {col: '' for col in df6.columns}  # Use empty strings instead of None
-            new_row['Player_Name'] = player_name  # Keep the player name
-            new_row['Line'] = match_row['Line']  # Insert the different line
-            new_rows.append(new_row)
+    #Create a empty space for new rows
+    new_rows = []
+    #Creates new rows that show if lines have changed for a player/prop combination to be combined back into the current_props dataframe
+    for _, match_row in matching_lines.iterrows():
+        new_row = {col: '' for col in df6.columns}  # Use empty strings instead of None
+        new_row['Player_Name'] = player_name  # Keep the player name
+        new_row['Line'] = match_row['Line']  # Insert the different line
+        new_rows.append(new_row)
 
-        # Concatenate the current row and new rows to df6
-        df6 = pd.concat([df6, pd.DataFrame([row.to_dict()]), pd.DataFrame(new_rows)], ignore_index=True)
+    # Concatenate the current row and new rows to df6
+    df6 = pd.concat([df6, pd.DataFrame([row.to_dict()]), pd.DataFrame(new_rows)], ignore_index=True)
 
 #Reorders the dataframe columns
 df6 = df6[['Event_ID','Prop','Player_Name','Odds','Line','Outcome','UD','Mtpl','PP']]
@@ -172,6 +170,7 @@ def res(row_number):
 df6['Over_Performance'] = 0
 df6['Under_Performance'] = 0
 df6['Last_10_Results'] = ''
+
 
 def calculate_performance(row):
     # Connect to the database
