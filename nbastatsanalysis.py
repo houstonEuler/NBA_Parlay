@@ -161,26 +161,16 @@ def get_median_variance_for_player(player_id, prop):
     
     return median, variance
 
+#Add Function to get player and opponent from each game, from the matchup column, if possible.
 
-#Analyze opponent performance for each prop
-def analyze_player_performance_by_matchup(matchup,prop):
-    # Connect to the database
-    conn = sqlite3.connect('nba_stats.db')
-    
-    # Query to calculate average of chosen stat grouped by matchup
-    query = f"""
-    SELECT ({matchup}), AVG({prop}) AS avg_{prop}
-    FROM player_game_logs
-    GROUP BY ({matchup})
-    """
-    
-    # Execute the query and fetch the results into a DataFrame
-    df = pd.read_sql_query(query, conn)
-    
-    # Close the connection
-    conn.close()
-    
-    return df
+
+#Add function to average stats for each opponent
+
+
+#Compare to third party websites, and adjust if necessary
+
+
+#Use third party websites to pull rankings/averages for each stat vs. position
 
 
 #(Do you need player position and starting status?  Is this available from nba_stats?)
