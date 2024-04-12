@@ -1,6 +1,6 @@
 certifi==2023.11.17
 charset-normalizer==3.3.2
-idna==3.6
+idna==3.7
 nba_api==1.4.1
 numpy==1.26.4
 pandas==2.2.1
